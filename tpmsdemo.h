@@ -8,8 +8,6 @@
 #include <ctype.h>
 #include <time.h>
 
-#define UART_PORT FILE*
-
 void sys_handle_error();
 uint32_t sys_get_ticks();
 
