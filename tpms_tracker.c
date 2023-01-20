@@ -17,7 +17,6 @@ void tpms_tracker_init(struct tpms_tracker *tracker, struct tpms_storage *storag
 }
 
 void tpms_tracker_process(struct tpms_tracker *tracker, const uint8_t data) {
-// Check packet timeout and reset the states if it happened
 	if (sys_get_ticks() - tracker->last_char_ticks > TMPS_PACKET_TIMEOUT) {
 // Timeout occurred
 		tracker->line_len = 0;
@@ -56,6 +55,11 @@ int tpms_tracker_handle_line(struct tpms_tracker *tracker) {
 
 int tpms_tracker_handle_packet(struct tpms_tracker *tracker, const struct tpms_packet *packet) {
 	struct tpms_record record;
+	
+// Remove the oldest record if there is no space left
+	if (tpms_storage_is_full(tracker->storage))
+		tpms_storage_pop(tracker->storage, NULL);
+
 	return(tpms_storage_push_back(tracker->storage, tpms_convert_packet_to_record(packet, &record)));
 }
 

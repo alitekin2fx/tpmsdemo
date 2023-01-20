@@ -10,10 +10,11 @@ struct tpms_record
 
 struct tpms_storage
 {
-	struct tpms_record *records;
-	volatile int write_seq;
-	volatile int read_seq;
 	int capacity;
+	volatile int head;
+	volatile int tail;
+	volatile int full;
+	struct tpms_record *records;
 };
 
 int tpms_storage_init(struct tpms_storage *storage, int capacity);
@@ -23,12 +24,11 @@ int tpms_storage_push_back(struct tpms_storage *storage, const struct tpms_recor
 int tpms_storage_pop(struct tpms_storage *storage, struct tpms_record *record);
 
 static inline int tpms_storage_is_empty(const struct tpms_storage *storage) {
-	return (storage->write_seq < storage->read_seq);
+	return ((storage->head == storage->tail) && !storage->full);
 }
 
 static inline int tpms_storage_is_full(const struct tpms_storage *storage) {
-	int size = (storage->write_seq - storage->read_seq) + 1;
-	return (size >= storage->capacity);
+	return (storage->full);
 }
 
 #endif //__TPMS_STORAGE_H__
