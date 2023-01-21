@@ -18,6 +18,7 @@ struct tpms_packet
 struct tpms_tracker
 {
 	int line_len;
+	int skip_line;
 	int last_char;
 	uint32_t last_char_ticks;
 	struct tpms_storage *storage;
@@ -25,6 +26,6 @@ struct tpms_tracker
 };
 
 void tpms_tracker_init(struct tpms_tracker *tracker, struct tpms_storage *storage);
-void tpms_tracker_process(struct tpms_tracker *tracker, uint8_t data);
+void tpms_tracker_process(struct tpms_tracker *tracker, int data);
 
 #endif //__TPMS_TRACKER_H__
